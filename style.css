@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+   font-family: "Montserrat", sans-serif, serif;
+}
+
+html,
+body {
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   display: none;
+   margin: 0;
+}
+
+input[type="number"] {
+   -moz-appearance: textfield;
+}
+
+/* Calculator */
+.container-calculator {
+   border: 1px solid black;
+   padding: 8px;
+   height: 450px;
+   width: 400px;
+}
+
+.container-calculator div {
+   border: 1px solid red;
+}
+
+/* Container Inputs */
+
+.container-inputs {
+   width: 100%;
+   height: 20%;
+   position: relative;
+}
+
+.container-inputs > span {
+   position: absolute;
+   right: 10px;
+   top: 5px;
+   z-index: 1;
+   text-align: right;
+}
+
+.container-inputs > input {
+   position: absolute;
+   bottom: 5px;
+   width: 100%;
+   min-height: 30%;
+   /* padding-top: 60px;
+   padding-bottom: 10px; */
+   padding: 50px 5px 10px 10px;
+   text-align: right;
+}
+
+/* Keys */
+
+/* Input section */
+.container-numkeys {
+   display: flex;
+   flex-direction: column;
+   height: calc(100% - 20%);
+}
+
+.container-special-keys {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 8px;
+}
+
+.container-special-keys > span {
+   background-color: yellow;
+   flex-grow: 1;
+   flex-shrink: 1;
+}
+
+
+/* Numbers and Operators section */
+.container-NumOpe {
+   display: flex;
+   flex-grow: 1;
+   height: 100% !important;
+}
+
+
