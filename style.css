@@ -23,7 +23,7 @@ input::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
-   -moz-appearance: textfield;
+   appearance: textfield;
 }
 
 /* Calculator */
@@ -94,11 +94,26 @@ input[type="number"] {
 .container-NumOpe {
    display: flex;
    flex-grow: 2;
+   gap: 8px;
 }
 
 /* Numbers */
 .container-numbers{
+   display: flex;
+   gap: 8px;
+   flex-direction: column;
    flex-grow: 2;
+}
+
+.container-numbers div:nth-child(1n){
+   display: flex;
+   gap: 8px;
+   flex-grow: 1;
+}
+
+.container-numbers div:nth-child(1n) span{
+   border: 1px solid black;
+   flex-grow: 1;
 }
 
 /* Operators */
@@ -106,6 +121,10 @@ input[type="number"] {
    display: flex;
    flex-direction: column;
    flex-grow: 0.5;
+}
+
+.container-operators span{
+   flex-grow: 1;
 }
 
 
