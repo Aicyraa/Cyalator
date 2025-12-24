@@ -12,41 +12,67 @@
 
    */
 
-const numKeys = document.querySelector(".container-numkeys");
-const display = document.querySelector("#input");
-const del = document.querySelector("#del");
-const clear = document.querySelector("#clear");
-const evaluate = document.querySelector("#compute");
+const keys = {
+   numKeys: document.querySelector(".container-numkeys"),
+   display: document.querySelector("#input"),
+   result: document.querySelector("#recent-input"),
+   del: document.querySelector("#del"),
+   clear: document.querySelector("#clear"),
+   evaluate: document.querySelector("#compute"),
+};
+
+const logic = {
+   previousResult: 0,
+   hasOperator: false,
+   // can be use to check if the expression alreadry has a opeartor
+   // if yes compute when clicked a new operator
+   // if not dont do anything
+};
 
 (function () {
    removeDisplay();
-   numKeys.addEventListener("click", setDisplay);
-   del.addEventListener("click", removeDisplay);
-   clear.addEventListener("click", removeChar);
-   evaluate.addEventListener("click", expressionCompute);
+   keys.numKeys.addEventListener("click", setDisplay);
+   keys.del.addEventListener("click", removeChar);
+   keys.clear.addEventListener("click", removeDisplay);
+   keys.evaluate.addEventListener("click", expressionCompute);
 })();
 
-function setDisplay(e) {
-   const value = e.target.id;
-   if (value === undefined || ["clear", "del", "compute"].includes(value))
-      return;
-   display.value += value;
+function setDisplay(e, result) {
+   const specialKeys = ["clear", "del", "compute"];
+   const operators = ["+", "-", "×", "÷"];
+   const value = e ? e.target.id : result;
+
+   if (e) {
+      if (specialKeys.includes(value) || value === undefined) return;
+      else if (operators.includes(value) && !logic.hasOperator) {
+         keys.display.value += value;
+         logic.hasOperator = true;
+      } 
+      
+      if (!operators.includes(value)) {
+         keys.display.value += value
+      }
+   }
+
+   if (result) {
+      keys.display.value = value;
+   }
 }
 
 function removeDisplay() {
-   display.value = "";
+   keys.display.value = "";
 }
 
 function removeChar() {
-   const value = display.value;
-   display.value = value.slice(0, value.length - 1);
+   const value = keys.display.value;
+   keys.display.value = value.slice(0, value.length - 1);
 }
 
 function expressionFilter() {
    let operator,
       operand_1,
       operand_2,
-      expression = display.value;
+      expression = keys.display.value;
 
    for (let char of expression) {
       if (
@@ -65,26 +91,39 @@ function expressionFilter() {
 }
 
 function expressionCompute() {
-   // 
-   // split the operands by the operator
+   // must calculate 2 operand at a time
+   // must only have 1 operator at a time
+   // Scenario:
+   // 1 + 2 "+";
+   // if the user presses another operator,
+   // it should compute first and display the result 1 + 2 = 3
+   // result + 5 = 8 ; should use the previous result as the first number
+
+   // checks if "previousResult" is empty
+   // a logic that sets "hasOperator" to true and attach a listener to it
+   // a logic that sets the "hasOperator" to false to remove the listener
+
    let [op1, op, op2] = expressionFilter();
+   let result;
 
    switch (op) {
       case "+":
-         display.value = op1 + op2;
+         result = op1 + op2;
          break;
       case "-":
-         display.value = op1 - op2;
+         result = op1 - op2;
          break;
       case "×":
-         display.value = op1 * op2;
+         result = op1 * op2;
          break;
       case "÷":
-         display.value = (op1 / op2).toFixed(3);
+         result = (op1 / op2).toFixed(3);
          break;
       case "%":
-         display.value = op1 % op2;
+         result = op1 % op2;
          break;
    }
-}
 
+   // set a value to "previousDisplay"
+   setDisplay(false, result);
+}
