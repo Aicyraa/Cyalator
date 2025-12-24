@@ -1,17 +1,3 @@
-/* 
-   Parts:
-   1. Make a object containing the keys, numbers, operators //
-   2. function for displaying the corresponding numbers and operators //
-   3. function for processing / evaluating the input from display 
-      * must prevent from inputing 2 decimal or dot ** Disabling the button
-      * display error if 1 operand is provided
-      * should only compute / evaluate 2 number at a time then save it to a result variable
-
-   extra:
-      may animation after idisplay ung result tas pag pipindot ulit ng number ung number magsslide pataas
-
-   */
-
 const keys = {
    numKeys: document.querySelector(".container-numkeys"),
    display: document.querySelector("#input"),
@@ -24,9 +10,7 @@ const keys = {
 const logic = {
    previousResult: 0,
    hasOperator: false,
-   // can be use to check if the expression alreadry has a opeartor
-   // if yes compute when clicked a new operator
-   // if not dont do anything
+   hasDecimal: [false, false],
 };
 
 (function () {
@@ -42,19 +26,31 @@ function setDisplay(e, result) {
    const operators = ["+", "-", "×", "÷"];
    const value = e ? e.target.id : result;
 
+   //I used event delagation in this project
    if (e) {
-      if (specialKeys.includes(value) || value === undefined) return;
-      else if (operators.includes(value) && !logic.hasOperator) {
+      if (specialKeys.includes(value) || value === undefined) {
+         // So this "if" logic prevents unwanted value in the display
+         return;
+      } else if (operators.includes(value) && !logic.hasOperator) {
+         // prevents multiple operator at a time
          keys.display.value += value;
          logic.hasOperator = true;
+      } else if (value === ".") {
+         const index = logic.hasOperator ? 1 : 0;
+         if (logic.hasDecimal[index]) return;
+
+         logic.hasDecimal[index] = true;
+         keys.display.value += value;
+         return;
       }
 
-      if (!operators.includes(value)) {
-         // check if previous result is not empty
+      // only allows 1 decimal in one expression lol
+      if (value != "." && !operators.includes(value)) {
+         // if user pressed a digit after evaluating rather an operator
+         // remove the vaue for previous result
          if (logic.previousResult && !logic.hasOperator) {
             keys.display.value = value;
-            keys.result.textContent = `Recent = ${logic.previousResult}` 
-            logic.previousResult = 0;
+            handlerResult();
             return;
          }
 
@@ -64,10 +60,23 @@ function setDisplay(e, result) {
 
    if (result) {
       keys.display.value = value;
-      keys.result.textContent = `${value}`;
-      logic.previousResult = result;
+      handlerResult(value);
    }
 }
+
+function handlerResult(hasResult) {
+   if (hasResult) {
+      keys.result.textContent = hasResult;
+      logic.previousResult = hasResult;
+   } else {
+      keys.result.textContent = `Previous = ${logic.previousResult}`;
+      logic.previousResult = 0;
+   }
+}
+
+// function truncquate() {
+
+// }
 
 function removeDisplay() {
    keys.display.value = "";
@@ -97,23 +106,13 @@ function expressionFilter() {
       }
    }
 
-   return [parseInt(operand_1), operator, parseInt(operand_2)];
+   // checks if the number includes decimal
+   return [Number(operand_1), operator, Number(operand_2)];
 }
 
 function expressionCompute() {
-   // must calculate 2 operand at a time
-   // must only have 1 operator at a time
-   // Scenario:
-   // 1 + 2 "+";
-   // if the user presses another operator,
-   // it should compute first and display the result 1 + 2 = 3
-   // result + 5 = 8 ; should use the previous result as the first number
-
-   // checks if "previousResult" is empty
-   // a logic that sets "hasOperator" to true and attach a listener to it
-   // a logic that sets the "hasOperator" to false to remove the listener
-
    let [op1, op, op2] = expressionFilter();
+   if (op1 == undefined || op2 == undefined) return;
    let result;
 
    switch (op) {
@@ -134,6 +133,7 @@ function expressionCompute() {
          break;
    }
 
+   logic.hasDecimal = false;
    logic.hasOperator = false;
    setDisplay(false, result);
 }
