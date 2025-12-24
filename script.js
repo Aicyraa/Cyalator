@@ -47,15 +47,25 @@ function setDisplay(e, result) {
       else if (operators.includes(value) && !logic.hasOperator) {
          keys.display.value += value;
          logic.hasOperator = true;
-      } 
-      
+      }
+
       if (!operators.includes(value)) {
-         keys.display.value += value
+         // check if previous result is not empty
+         if (logic.previousResult && !logic.hasOperator) {
+            keys.display.value = value;
+            keys.result.textContent = `Recent = ${logic.previousResult}` 
+            logic.previousResult = 0;
+            return;
+         }
+
+         keys.display.value += value;
       }
    }
 
    if (result) {
       keys.display.value = value;
+      keys.result.textContent = `${value}`;
+      logic.previousResult = result;
    }
 }
 
@@ -124,6 +134,6 @@ function expressionCompute() {
          break;
    }
 
-   // set a value to "previousDisplay"
+   logic.hasOperator = false;
    setDisplay(false, result);
 }
